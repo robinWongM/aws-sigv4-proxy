@@ -63,7 +63,7 @@ func determineAWSServiceFromHost(host string) *endpoints.ResolvedEndpoint {
 	lambdaRegExp := regexp.MustCompile(`^.+\.lambda-url\.(.+)\.on\.aws(:\d+)?$`)
 	lambdaMatched := lambdaRegExp.FindStringSubmatch(host)
 	if len(lambdaMatched) > 0 {
-		return &endpoints.ResolvedEndpoint{URL: fmt.Sprintf("https://%s", host), SigningMethod: "v4", SigningRegion: lambdaMatched[1], SigningName: "aps", PartitionID: "aws"}
+		return &endpoints.ResolvedEndpoint{URL: fmt.Sprintf("https://%s", host), SigningMethod: "v4", SigningRegion: lambdaMatched[1], SigningName: "lambda", PartitionID: "aws"}
 	}
 
 	for endpoint, service := range services {
