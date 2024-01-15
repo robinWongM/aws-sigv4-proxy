@@ -17,6 +17,7 @@ package handler
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws/endpoints"
@@ -58,6 +59,13 @@ func init() {
 }
 
 func determineAWSServiceFromHost(host string) *endpoints.ResolvedEndpoint {
+	// Lambda function url
+	lambdaRegExp := regexp.MustCompile(`^.+\.lambda-url\.(.+)\.on\.aws(:\d+)?$`)
+	lambdaMatched := lambdaRegExp.FindStringSubmatch(host)
+	if len(lambdaMatched) > 0 {
+		return &endpoints.ResolvedEndpoint{URL: fmt.Sprintf("https://%s", host), SigningMethod: "v4", SigningRegion: lambdaMatched[1], SigningName: "aps", PartitionID: "aws"}
+	}
+
 	for endpoint, service := range services {
 		if host == endpoint {
 			return &service
